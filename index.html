@@ -3,37 +3,51 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ryheem's - Portfolio</title>
+  <title>Ryheem's Terminal Portfolio</title>
   <link rel="stylesheet" href="styles.css">
   <script src="script.js" defer></script>
   <link rel="icon" href="favicon.ico">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
-<body class="body">
-  <!-- Navigation -->
-  <header>
-    <nav>
-      <ul>
-        <li><a href="#about">About</a></li>
-        <li><a href="#skills">Skills</a></li>
-        <li><a href="#projects">Projects</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
-    </nav>
-  </header>
-
-  <!-- Hero Section -->
-  <section id="hero">
-    <div class="hero-content">
-      <h1>Hello, I'm <span>Ryheem Bonaparte</span></h1>
-      <p>Web Developer | Designer | Creator | Aspiring Network Engineer</p>
-      <a href="#contact" class="cta-btn">Get in Touch</a>
+<body class="terminal-body">
+  <div class="terminal-container">
+    <div class="terminal-header">
+      <div class="terminal-buttons">
+        <div class="terminal-button close"></div>
+        <div class="terminal-button minimize"></div>
+        <div class="terminal-button maximize"></div>
+      </div>
+      <div class="terminal-title">ryheem@portfolio:~</div>
     </div>
-  </section>
+    
+    <div class="terminal-window">
+      <div class="terminal-output" id="output">
+        <div class="welcome-message">
+          <pre class="ascii-art">
+ _____       _                          ______                                _       
+|  __ \     | |                         | ___ \                              | |      
+| |  \/_   _| |__   ___  ___ _ __ ___   | |_/ /___  _ __   __ _ _ __   __ _ | |_ ___ 
+| | __| | | | '_ \ / _ \/ _ \ '_ ` _ \  |    // _ \| '_ \ / _` | '_ \ / _` || __/ _ \
+| |_\ \ |_| | | | |  __/  __/ | | | | | | |\ \ (_) | | | | (_| | |_) | (_| || ||  __/
+ \____/\__, |_| |_|\___|\___|_| |_| |_| \_| \_\___/|_| |_|\__,_| .__/ \__,_| \__\___|
+        __/ |                                                  | |                   
+       |___/                                                   |_|                   
+          </pre>
+          <p>Welcome to my interactive terminal portfolio! Type <span class="command">help</span> to see available commands.</p>
+        </div>
+      </div>
+      <div class="terminal-input-line">
+        <span class="prompt">visitor@portfolio:~$</span>
+        <input type="text" id="terminal-input" autofocus autocomplete="off" spellcheck="false" aria-label="Terminal command input">
+      </div>
+    </div>
+  </div>
 
-  <!-- About Section -->
-  <section id="about">
-    <div class="container">
+  <!-- Hidden content containers that will be displayed in the terminal -->
+  <div id="hidden-content" style="display: none;">
+    <!-- About Section -->
+    <div id="about-content">
       <h2>About Me</h2>
       <p>I am a Technical Support Engineer at Spectrum Enterprise, specializing in voice, internet, and video services with expertise in fiber and coax connections. My professional journey began as a Non-Commissioned Officer in the United States Army, where I honed my leadership skills by managing a team of eight personnel, successfully completing high-pressure tasks, and serving as the Unit Prevention Leader (UPL) administering substance abuse testing.
 
@@ -43,11 +57,9 @@
         
         Aspiring to become a Cloud and Server Engineer, as well as a Networking Engineer, I am dedicated to advancing my career in IT and making meaningful contributions through innovative solutions and teamwork</p>
     </div>
-  </section>
 
-  <!-- Skills Section -->
-  <section id="skills">
-    <div class="container">
+    <!-- Skills Section -->
+    <div id="skills-content">
       <h2>Skills</h2>
       <div class="skill-list">
         <div class="skill">HTML</div>
@@ -68,148 +80,168 @@
         <div class="skill">DNS</div>
       </div>
     </div>
-  </section>
 
-  <!-- Projects Section -->
-  <section id="projects">
-    <div class="container">
+    <!-- Projects Section -->
+    <div id="projects-content">
       <h2>Projects</h2>
-
-      <div class="project featured">
-        <img src="images/retro.webp" alt="Tech Support Troubleshooter" class="project-image">
-        <div class="project-content">
-          <h3 class="project-title">Tech Support Troubleshooter</h3>
-          <div class="tech-stack">
-            <span class="tech-tag">FastAPI</span>
-            <span class="tech-tag">React</span>
-            <span class="tech-tag">Next.js</span>
-            <span class="tech-tag">Python</span>
-            <span class="tech-tag">Full Stack</span>
-          </div>
-          <p class="project-description">A comprehensive full-stack application showcasing modern web development practices. Built with FastAPI for efficient backend operations, React/Next.js for a responsive frontend, and implements real-time updates. Features include RESTful API design, state management, and interactive troubleshooting workflows.</p>
-          <div class="project-links">
-            <a href="https://github.com/Ryheembon/tech-support-troubleshooter" class="project-btn github">
-              <i class="fab fa-github"></i> View Code
-            </a>
-            <a href="[Your Demo Link]" class="project-btn demo">
-              <i class="fas fa-external-link-alt"></i> Live Demo
-            </a>
-          </div>
-        </div>
-      </div>
-
       <div class="project">
-        <img src="images/weather .png" alt="Weather App" class="project-image">
-        <div class="project-content">
-          <h3 class="project-title">Weather Dashboard</h3>
-          <div class="tech-stack">
-            <span class="tech-tag">HTML</span>
-            <span class="tech-tag">CSS</span>
-            <span class="tech-tag">JavaScript</span>
-            <span class="tech-tag">Weather API</span>
-          </div>
-          <p class="project-description">A sleek weather dashboard application that provides real-time weather information. Features include current conditions, location search, temperature display, and weather forecasts, all wrapped in a modern, responsive interface.</p>
-          <div class="project-links">
-            <a href="https://ryheembon.github.io/Weather-app/" class="project-btn demo">
-              <i class="fas fa-external-link-alt"></i> Live Demo
-            </a>
-          </div>
-        </div>
+        <h3>Tech Support Troubleshooter</h3>
+        <p>A comprehensive full-stack application showcasing modern web development practices. Built with FastAPI for efficient backend operations, React/Next.js for a responsive frontend, and implements real-time updates.</p>
+        <p>Technologies: FastAPI, React, Next.js, Python</p>
+        <p>Links: <a href="https://github.com/Ryheembon/tech-support-troubleshooter" target="_blank" rel="noopener noreferrer">GitHub</a></p>
       </div>
-
+      
       <div class="project">
-        <img src="https://media.licdn.com/dms/image/v2/D5612AQHIRHOCnlL9Aw/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1678829677749?e=1745452800&v=beta&t=QocZ9WxplpOBRCyyPTSF3Pwf-igXf6oI4HDemXDpOtA" alt="Coding Journey" class="project-image">
-        <div class="project-content">
-          <h3 class="project-title">Coding Journey Tracker</h3>
-          <div class="tech-stack">
-            <span class="tech-tag">JavaScript</span>
-            <span class="tech-tag">CSS</span>
-            <span class="tech-tag">HTML</span>
-            <span class="tech-tag">Local Storage</span>
-          </div>
-          <p class="project-description">An interactive platform for tracking daily coding challenges and learning progress. Features include daily challenges in Python and JavaScript, code editor with syntax highlighting, progress tracking, and a comprehensive learning management system.</p>
-          <div class="project-links">
-            <a href="https://github.com/Ryheembon/coding-journey-tracker" class="project-btn github">
-              <i class="fab fa-github"></i> View Code
-            </a>
-            <a href="https://ryheembon.github.io/coding-journey-tracker/" class="project-btn demo">
-              <i class="fas fa-external-link-alt"></i> Live Demo
-            </a>
-          </div>
-        </div>
+        <h3>Weather Dashboard</h3>
+        <p>A sleek weather dashboard application that provides real-time weather information.</p>
+        <p>Technologies: HTML, CSS, JavaScript, Weather API</p>
+        <p>Links: <a href="https://ryheembon.github.io/Weather-app/" target="_blank" rel="noopener noreferrer">Demo</a></p>
       </div>
-
+      
       <div class="project">
-        <img src="https://placehold.co/600x400/2c3e50/ffffff?text=Crossword+Puzzle" alt="Crossword Puzzle" class="project-image">
-        <div class="project-content">
-          <h3 class="project-title">Interactive Crossword Puzzle</h3>
-          <div class="tech-stack">
-            <span class="tech-tag">HTML</span>
-            <span class="tech-tag">CSS</span>
-            <span class="tech-tag">JavaScript</span>
-            <span class="tech-tag">Grid System</span>
-          </div>
-          <p class="project-description">A complex JavaScript application showcasing advanced DOM manipulation and grid system implementation. Features include dynamic puzzle generation, state persistence, and cross-browser compatibility, demonstrating attention to user experience and code organization.</p>
-          <div class="project-links">
-            <a href="https://ryheembon.github.io/Crossword-puzzle-/" class="project-btn demo">
-              <i class="fas fa-external-link-alt"></i> Live Demo
-            </a>
-          </div>
-        </div>
+        <h3>Coding Journey Tracker</h3>
+        <p>An interactive platform for tracking daily coding challenges and learning progress.</p>
+        <p>Technologies: JavaScript, CSS, HTML, Local Storage</p>
+        <p>Links: <a href="https://github.com/Ryheembon/coding-journey-tracker" target="_blank" rel="noopener noreferrer">GitHub</a> | <a href="https://ryheembon.github.io/coding-journey-tracker/" target="_blank" rel="noopener noreferrer">Demo</a></p>
       </div>
-
+      
       <div class="project">
-        <img src="images/coffee.jpeg" alt="Movie Recommender" class="project-image">
-        <div class="project-content">
-          <h3 class="project-title">Movie Recommender Application</h3>
-          <div class="tech-stack">
-            <span class="tech-tag">Python</span>
-            <span class="tech-tag">TMDb API</span>
-            <span class="tech-tag">Tkinter</span>
-            <span class="tech-tag">API Integration</span>
-          </div>
-          <p class="project-description">A sophisticated Python application demonstrating API integration, data processing, and GUI development. Implements the TMDb API for real-time data fetching, features a custom recommendation algorithm, and showcases clean code practices with proper error handling and user input validation.</p>
-          <div class="project-links">
-            <a href="https://github.com/Ryheembon/Movie-Recommender-Application" class="project-btn github">
-              <i class="fab fa-github"></i> View Code
-            </a>
-          </div>
-        </div>
+        <h3>Interactive Crossword Puzzle</h3>
+        <p>A complex JavaScript application showcasing advanced DOM manipulation and grid system implementation.</p>
+        <p>Technologies: HTML, CSS, JavaScript, Grid System</p>
+        <p>Links: <a href="https://ryheembon.github.io/Crossword-puzzle-/" target="_blank" rel="noopener noreferrer">Demo</a></p>
       </div>
-
+      
+      <div class="project">
+        <h3>Movie Recommender Application</h3>
+        <p>A sophisticated Python application demonstrating API integration, data processing, and GUI development.</p>
+        <p>Technologies: Python, TMDb API, Tkinter, API Integration</p>
+        <p>Links: <a href="https://github.com/Ryheembon/Movie-Recommender-Application" target="_blank" rel="noopener noreferrer">GitHub</a></p>
+      </div>
     </div>
-  </section>
-  
 
-  <!-- Contact Section -->
-  <section class="body" id="contact">
-    <div class="container">
-      <h2 class="body">Contact</h2>
+    <!-- Contact Section -->
+    <div id="contact-content">
+      <h2>Contact</h2>
       <p>Feel free to reach out if you'd like to work together or just chat!</p>
-<form action="mailto:ryheembon@gmail.com" method="POST" enctype="text/plain">
-  <input type="text" name="name" placeholder="Your Name" required>
-  <input type="email" name="email" placeholder="Your Email" required>
-  <textarea name="message" placeholder="Your Message" required></textarea>
-  <button type="submit">Send Message</button>
-</form>
-
+      <ul>
+        <li>Email: ryheembon@gmail.com</li>
+        <li>LinkedIn: <a href="https://www.linkedin.com/in/ryheem-bonaparte/" target="_blank" rel="noopener noreferrer">linkedin.com/in/ryheem-bonaparte</a></li>
+        <li>YouTube: <a href="https://www.youtube.com/channel/UCyco1zCSbGa36ItTtSU6-9w" target="_blank" rel="noopener noreferrer">YouTube Channel</a></li>
+        <li>GitHub: <a href="https://github.com/Ryheembon" target="_blank" rel="noopener noreferrer">github.com/Ryheembon</a></li>
+      </ul>
     </div>
-  </section>
 
-  <!-- Footer -->
-  <div class="bottom-container">
-    <a class="footer-link" href="https://www.linkedin.com/in/ryheem-bonaparte/">LinkedIn</a>
-    <a class="footer-link" href="https://www.youtube.com/channel/UCyco1zCSbGa36ItTtSU6-9w">Youtube</a>
-    <a class="footer-link" href="https://www.pinterest.com/ryheembon/">Pinterest</a>
+    <!-- Game Section -->
+    <div id="game-content">
+      <h2>Terminal Game</h2>
+      <p>Try to find the hidden easter eggs in this terminal! There are several secret commands...</p>
+      <p>Hint: Try commands like <span class="command">secret</span>, <span class="command">matrix</span>, or <span class="command">coffee</span>.</p>
+      <p>For a full text adventure experience, try the command <span class="command">adventure</span> to start "The Portfolio Quest" - explore different rooms and find items to learn more about me!</p>
+    </div>
+
+    <!-- Help Section -->
+    <div id="help-content">
+      <h2>Available Commands</h2>
+      <table class="commands-table">
+        <tr>
+          <td><span class="command">help</span></td>
+          <td>Display this help message</td>
+        </tr>
+        <tr>
+          <td><span class="command">about</span></td>
+          <td>Learn about me</td>
+        </tr>
+        <tr>
+          <td><span class="command">skills</span></td>
+          <td>View my technical skills</td>
+        </tr>
+        <tr>
+          <td><span class="command">projects</span></td>
+          <td>Browse my projects</td>
+        </tr>
+        <tr>
+          <td><span class="command">contact</span></td>
+          <td>How to get in touch with me</td>
+        </tr>
+        <tr>
+          <td><span class="command">clear</span></td>
+          <td>Clear the terminal screen</td>
+        </tr>
+        <tr>
+          <td><span class="command">game</span></td>
+          <td>Play a terminal game</td>
+        </tr>
+        <tr>
+          <td><span class="command">adventure</span></td>
+          <td>Start an interactive text adventure</td>
+        </tr>
+        <tr>
+          <td><span class="command">resume</span></td>
+          <td>View my resume</td>
+        </tr>
+        <tr>
+          <td><span class="command">social</span></td>
+          <td>List my social media profiles</td>
+        </tr>
+      </table>
+      <p>Try combining commands with arguments, e.g., <span class="command">projects list</span> or <span class="command">skills search networking</span></p>
+    </div>
+
+    <!-- Social Media Section -->
+    <div id="social-content">
+      <h2>Social Media</h2>
+      <ul>
+        <li>LinkedIn: <a href="https://www.linkedin.com/in/ryheem-bonaparte/" target="_blank" rel="noopener noreferrer">linkedin.com/in/ryheem-bonaparte</a></li>
+        <li>YouTube: <a href="https://www.youtube.com/channel/UCyco1zCSbGa36ItTtSU6-9w" target="_blank" rel="noopener noreferrer">YouTube Channel</a></li>
+        <li>Pinterest: <a href="https://www.pinterest.com/ryheembon/" target="_blank" rel="noopener noreferrer">pinterest.com/ryheembon</a></li>
+        <li>GitHub: <a href="https://github.com/Ryheembon" target="_blank" rel="noopener noreferrer">github.com/Ryheembon</a></li>
+      </ul>
+    </div>
+
+    <!-- Resume Section -->
+    <div id="resume-content">
+      <h2>Resume</h2>
+      <h3>Experience</h3>
+      <div class="resume-item">
+        <h4>Technical Support Engineer</h4>
+        <p>Spectrum Enterprise | Current</p>
+        <ul>
+          <li>Specialized in voice, internet, and video services</li>
+          <li>Expertise in fiber and coax connections</li>
+        </ul>
+      </div>
+      
+      <div class="resume-item">
+        <h4>Non-Commissioned Officer</h4>
+        <p>United States Army | Previous</p>
+        <ul>
+          <li>Managed team of eight personnel</li>
+          <li>Completed high-pressure tasks</li>
+          <li>Served as Unit Prevention Leader (UPL)</li>
+        </ul>
+      </div>
+      
+      <h3>Education</h3>
+      <div class="resume-item">
+        <h4>Washington Vet-to-Tech Program</h4>
+        <p>Saint Martin's University</p>
+        <ul>
+          <li>Server and cloud administration</li>
+          <li>DNS, Active Directory, Azure AD, PowerShell, SQL Server</li>
+          <li>Virtualization technologies</li>
+        </ul>
+      </div>
+      
+      <h3>Certifications</h3>
+      <ul>
+        <li>Progress toward Network+ certification</li>
+      </ul>
+    </div>
   </div>
-  <footer>
+
+  <footer class="terminal-footer">
     <p>&copy; 2025 Ryheem Bonaparte. All rights reserved.</p>
   </footer>
-
-  <style>
-  #hero {
-    background: url('images/coffee.jpeg') no-repeat center center/cover;
-  }
-  </style>
 </body>
 </html>
