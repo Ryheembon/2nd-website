@@ -17,6 +17,10 @@ An interactive, terminal-style web portfolio that simulates a command-line inter
 - **Text Adventure Game**: Play an adventure game with the `adventure` command
 - **Matrix Effect**: Experience a Matrix-like animation with the `matrix` command
 - **Accessibility Features**: Skip links and proper ARIA attributes
+- **Keyboard Shortcuts**: Power-user features like Ctrl+L to clear terminal
+- **Mobile Optimization**: Touch-friendly command buttons for mobile users
+- **Resume Download**: Easily download a resume with the `download resume` command
+- **SEO Optimized**: Enhanced discoverability with proper meta tags
 
 ## Commands
 
@@ -37,6 +41,14 @@ An interactive, terminal-style web portfolio that simulates a command-line inter
 - `hack` - Start a hacking simulation
 - `matrix` - Trigger Matrix rain effect
 - `coffee` - Take a coffee break
+- `download resume` - Download a copy of my resume
+
+## Keyboard Shortcuts
+
+- `Ctrl+L` - Clear terminal (like in real terminals)
+- `Tab` - Autocomplete commands
+- `↑/↓` - Navigate command history
+- `Escape` - Exit adventure mode
 
 ## Secret Commands
 
@@ -66,6 +78,13 @@ Unlock additional features with the right password:
 To modify styles or add new commands:
 - Edit `styles.css` to change the appearance
 - Update `script.js` to add new commands or modify behavior
+
+## Mobile Support
+
+The terminal includes special optimizations for mobile devices:
+- Touch-friendly command buttons
+- Responsive layout that adapts to screen size
+- Smooth scrolling for terminal output
 
 ## License
 

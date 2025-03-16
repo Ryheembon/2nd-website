@@ -154,6 +154,13 @@ document.addEventListener('DOMContentLoaded', () => {
       case 'hack':
         startHackingSimulation();
         break;
+      case 'download':
+        if (args.length > 0 && args[0] === 'resume') {
+          downloadResume();
+        } else {
+          addToTerminal('<span class="error">Usage: download resume</span>');
+        }
+        break;
       case '':
         // Do nothing for empty command
         break;
@@ -223,6 +230,14 @@ document.addEventListener('DOMContentLoaded', () => {
     addToTerminal('<span class="command">level</span> - View skill level (e.g., level javascript)');
     addToTerminal('<span class="command">quote</span> - Display a random inspirational quote');
     addToTerminal('<span class="command">hack</span> - Start a hacking simulation');
+    addToTerminal('<span class="command">download resume</span> - Download my resume');
+    
+    // Add keyboard shortcuts
+    addToTerminal('<br><strong>Keyboard Shortcuts:</strong>');
+    addToTerminal('<span class="command">Ctrl+L</span> - Clear terminal');
+    addToTerminal('<span class="command">Tab</span> - Autocomplete commands');
+    addToTerminal('<span class="command">↑/↓</span> - Navigate command history');
+    addToTerminal('<span class="command">Escape</span> - Exit adventure mode');
   }
 
   // Function to clear terminal
@@ -501,7 +516,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'contact', 'game', 'resume', 'social', 'echo', 
         'date', 'whoami', 'sudo', 'matrix', 'coffee', 
         'secret', 'unlock', 'theme', 'level', 'quote', 'hack',
-        'adventure'
+        'adventure', 'download'
       ];
       
       const matches = commands.filter(cmd => cmd.startsWith(command));
@@ -676,5 +691,155 @@ document.addEventListener('DOMContentLoaded', () => {
       }, index * 800);
     });
   }
+
+  // Add keyboard shortcuts
+  document.addEventListener('keydown', (e) => {
+    // Skip if inside input field or if modifiers other than Ctrl are pressed
+    if (e.target.tagName === 'INPUT' && e.target.id !== 'terminal-input') return;
+    if (e.altKey || e.metaKey) return;
+    
+    // Ctrl+L: Clear terminal (like in real terminals)
+    if (e.ctrlKey && e.key === 'l') {
+      e.preventDefault();
+      clearTerminal();
+      return;
+    }
+    
+    // Escape: Exit adventure mode
+    if (e.key === 'Escape' && adventureState.inProgress) {
+      e.preventDefault();
+      addToTerminal('<span class="success">Exiting the adventure. Come back anytime!</span>');
+      adventureState.inProgress = false;
+      return;
+    }
+    
+    // Focus terminal input when typing starts
+    if (!e.ctrlKey && !e.altKey && !e.metaKey && e.key.length === 1) {
+      if (document.activeElement !== input) {
+        input.focus();
+        // If it's a character key, add it to the input
+        input.value += e.key;
+        e.preventDefault();
+      }
+    }
+  });
+
+  // Function to download resume
+  function downloadResume() {
+    // Create a dummy resume file (you would replace this with a link to your actual resume)
+    const resumeContent = `
+Name: Ryheem Bonaparte
+Title: Developer & Designer
+Contact: your-email@example.com
+
+SUMMARY
+=======
+Innovative developer with skills in frontend, backend, and design.
+
+SKILLS
+======
+- JavaScript, HTML, CSS
+- UI/UX Design
+- Terminal Applications
+- Interactive Web Development
+
+EXPERIENCE
+==========
+- Interactive Portfolio Creation
+- Web Development Projects
+- UI/UX Design Implementation
+`;
+
+    // Create a blob from the text
+    const blob = new Blob([resumeContent], { type: 'text/plain' });
+    
+    // Create a URL from the blob
+    const url = URL.createObjectURL(blob);
+    
+    // Create an anchor element
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'ryheem_bonaparte_resume.txt';
+    
+    // Append to the body temporarily
+    document.body.appendChild(a);
+    
+    // Programmatically click the link
+    a.click();
+    
+    // Clean up
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    addToTerminal('<span class="success">Resume download started...</span>');
+    addToTerminal('For a proper resume, update the downloadResume function with your actual resume file.');
+  }
+
+  // Add mobile touch enhancements
+  function addMobileTouchSupport() {
+    // Only add mobile-specific enhancements if on a touch device
+    if ('ontouchstart' in window) {
+      // Create mobile command buttons
+      const mobileCommandsContainer = document.createElement('div');
+      mobileCommandsContainer.className = 'mobile-commands';
+      mobileCommandsContainer.innerHTML = `
+        <div class="mobile-commands-container">
+          <button class="mobile-cmd-btn" data-cmd="help">help</button>
+          <button class="mobile-cmd-btn" data-cmd="clear">clear</button>
+          <button class="mobile-cmd-btn" data-cmd="about">about</button>
+          <button class="mobile-cmd-btn" data-cmd="skills">skills</button>
+          <button class="mobile-cmd-btn" data-cmd="projects">projects</button>
+          <button class="mobile-cmd-btn" data-cmd="theme">theme</button>
+          <button class="mobile-cmd-btn" data-cmd="more">more...</button>
+        </div>
+      `;
+      
+      document.querySelector('.terminal-window').appendChild(mobileCommandsContainer);
+      
+      // Handle mobile command button clicks
+      document.querySelectorAll('.mobile-cmd-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const cmd = btn.getAttribute('data-cmd');
+          
+          if (cmd === 'more') {
+            // Show expanded command set
+            mobileCommandsContainer.innerHTML = `
+              <div class="mobile-commands-container">
+                <button class="mobile-cmd-btn" data-cmd="contact">contact</button>
+                <button class="mobile-cmd-btn" data-cmd="adventure">adventure</button>
+                <button class="mobile-cmd-btn" data-cmd="quote">quote</button>
+                <button class="mobile-cmd-btn" data-cmd="matrix">matrix</button>
+                <button class="mobile-cmd-btn" data-cmd="download resume">resume</button>
+                <button class="mobile-cmd-btn" data-cmd="hack">hack</button>
+                <button class="mobile-cmd-btn" data-cmd="back">back</button>
+              </div>
+            `;
+          } else if (cmd === 'back') {
+            // Return to main command set
+            mobileCommandsContainer.innerHTML = `
+              <div class="mobile-commands-container">
+                <button class="mobile-cmd-btn" data-cmd="help">help</button>
+                <button class="mobile-cmd-btn" data-cmd="clear">clear</button>
+                <button class="mobile-cmd-btn" data-cmd="about">about</button>
+                <button class="mobile-cmd-btn" data-cmd="skills">skills</button>
+                <button class="mobile-cmd-btn" data-cmd="projects">projects</button>
+                <button class="mobile-cmd-btn" data-cmd="theme">theme</button>
+                <button class="mobile-cmd-btn" data-cmd="more">more...</button>
+              </div>
+            `;
+          } else {
+            // Execute the command
+            input.value = cmd;
+            input.focus();
+            const event = new KeyboardEvent('keydown', { key: 'Enter' });
+            input.dispatchEvent(event);
+          }
+        });
+      });
+    }
+  }
+  
+  // Call mobile enhancements function
+  addMobileTouchSupport();
 });
   
