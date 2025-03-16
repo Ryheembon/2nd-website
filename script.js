@@ -92,6 +92,10 @@ document.addEventListener('DOMContentLoaded', () => {
       case 'social':
         showContent('social-content');
         break;
+      case 'certs':
+      case 'certifications':
+        showCertifications();
+        break;
       case 'echo':
         addToTerminal(args.join(' '));
         break;
@@ -234,6 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
     addToTerminal('<span class="command">quote</span> - Display a random inspirational quote');
     addToTerminal('<span class="command">hack</span> - Start a hacking simulation');
     addToTerminal('<span class="command">download resume</span> - Download my resume');
+    addToTerminal('<span class="command">certs</span> - View my certifications and credentials');
     
     // Add keyboard shortcuts
     addToTerminal('<br><strong>Keyboard Shortcuts:</strong>');
@@ -532,7 +537,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'contact', 'game', 'resume', 'social', 'echo', 
         'date', 'whoami', 'sudo', 'matrix', 'coffee', 
         'secret', 'unlock', 'theme', 'level', 'quote', 'hack',
-        'adventure', 'download'
+        'adventure', 'download', 'certs', 'certifications'
       ];
       
       const matches = commands.filter(cmd => cmd.startsWith(command));
@@ -865,6 +870,7 @@ EXPERIENCE
                 <button class="mobile-cmd-btn" data-cmd="quote">quote</button>
                 <button class="mobile-cmd-btn" data-cmd="matrix">matrix</button>
                 <button class="mobile-cmd-btn" data-cmd="download resume">resume</button>
+                <button class="mobile-cmd-btn" data-cmd="certs">certs</button>
                 <button class="mobile-cmd-btn" data-cmd="hack">hack</button>
                 <button class="mobile-cmd-btn" data-cmd="back">back</button>
               </div>
@@ -896,5 +902,74 @@ EXPERIENCE
   
   // Call mobile enhancements function
   addMobileTouchSupport();
+
+  // Function to display certifications
+  function showCertifications() {
+    addToTerminal(`<h2>My Certifications</h2>`);
+    
+    const certifications = [
+      {
+        name: "Meta Front-End Developer",
+        issuer: "Meta",
+        date: "Feb 2025",
+        id: "2WVGJMWQLS41",
+        skills: "React, JavaScript, UI/UX Design, Responsive Web Design"
+      },
+      {
+        name: "Python for Data Science, AI & Development",
+        issuer: "IBM",
+        date: "Feb 2025",
+        id: "PLKJMXLEP0AY",
+        skills: "Python, Pandas, NumPy, Matplotlib, Machine Learning"
+      },
+      {
+        name: "Azure-900 Azure Fundamentals",
+        issuer: "Microsoft",
+        date: "Jun 2022",
+        id: "993323586",
+        skills: "Active Directory, Cloud Applications, Azure Services"
+      },
+      {
+        name: "Linux Essentials",
+        issuer: "Linux Professional Institute (LPI)",
+        date: "Jun 2022",
+        id: "LPI00527013",
+        skills: "Linux Administration, Command Line, Shell Scripting"
+      },
+      {
+        name: "Google IT Support Specialization",
+        issuer: "Coursera",
+        date: "Jan 2022",
+        id: "JAHSRRGECC89",
+        skills: "IT Support, Networking, Troubleshooting, Customer Service"
+      },
+      {
+        name: "MTA: Networking Fundamentals",
+        issuer: "Microsoft",
+        date: "Oct 2021",
+        id: "Ryheem Bonaparte",
+        skills: "Networking, IT Infrastructure, Customer Service, Cloud"
+      }
+    ];
+    
+    certifications.forEach(cert => {
+      // Create a visually distinct box for each certification
+      addToTerminal(`
+        <div style="margin: 10px 0; padding: 10px; border-left: 3px solid var(--terminal-green); background-color: rgba(0, 255, 0, 0.05);">
+          <strong style="color: var(--terminal-blue);">${cert.name}</strong> - ${cert.issuer} <span style="color: var(--terminal-gray);">(${cert.date})</span>
+          <br>
+          <span style="color: var(--terminal-gray);">ID: ${cert.id}</span>
+          <br>
+          <span style="color: var(--terminal-green);">Skills: ${cert.skills}</span>
+        </div>
+      `);
+    });
+    
+    // Add information about in-progress certifications
+    addToTerminal(`<div style="margin-top: 15px;"><strong>In Progress:</strong> Network+ certification</div>`);
+    
+    // Add a tip about viewing full resume
+    addToTerminal(`<div style="margin-top: 20px; font-style: italic; color: var(--terminal-gray);">Type <span class="command">resume</span> to see my full resume or <span class="command">download resume</span> to download a copy.</div>`);
+  }
 });
   
