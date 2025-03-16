@@ -11,9 +11,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // Username changes when unlocked
   let username = 'visitor';
   let isAdmin = false;
-  
+
   // Flag to track if welcome message has been shown
   let welcomeMessageShown = false;
+  
+  // Default typing speed
+  let typingSpeed = 25; // milliseconds between characters
   
   // Simulate terminal loading
   simulateLoading();
@@ -75,7 +78,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         break;
       case 'projects':
-        showContent('projects-content');
+        if (args.length > 0 && args[0] === 'search') {
+          searchProjects(args.slice(1).join(' '));
+        } else {
+          showContent('projects-content');
+        }
         break;
       case 'contact':
         showContent('contact-content');
@@ -95,6 +102,10 @@ document.addEventListener('DOMContentLoaded', () => {
       case 'certs':
       case 'certifications':
         showCertifications();
+        break;
+      case 'interests':
+      case 'hobbies':
+        showInterests();
         break;
       case 'echo':
         addToTerminal(args.join(' '));
@@ -160,6 +171,20 @@ document.addEventListener('DOMContentLoaded', () => {
         break;
       case 'hack':
         startHackingSimulation();
+        break;
+      case 'speed':
+        if (args.length > 0 && ['slow', 'medium', 'fast', 'instant'].includes(args[0])) {
+          setTypingSpeed(args[0]);
+        } else {
+          addToTerminal('<span class="error">Usage: speed [slow|medium|fast|instant]</span>');
+        }
+        break;
+      case 'weather':
+        if (args.length > 0) {
+          showWeather(args.join(' '));
+        } else {
+          addToTerminal('<span class="error">Usage: weather [city name]</span>');
+        }
         break;
       case 'download':
         if (args.length > 0 && args[0] === 'resume') {
@@ -228,6 +253,38 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Function to search projects
+  function searchProjects(query) {
+    if (!query) {
+      addToTerminal('<span class="error">Please provide a search term. Example: projects search python</span>');
+      return;
+    }
+
+    const projectsContent = hiddenContent.querySelector('#projects-content');
+    const projects = projectsContent.querySelectorAll('.project');
+    const results = [];
+
+    projects.forEach(project => {
+      if (project.textContent.toLowerCase().includes(query.toLowerCase())) {
+        const title = project.querySelector('h3').textContent;
+        const description = project.querySelector('p').textContent;
+        results.push({ title, description });
+      }
+    });
+
+    if (results.length > 0) {
+      addToTerminal(`<span class="success">Found ${results.length} projects matching "${query}":</span>`);
+      results.forEach(project => {
+        addToTerminal(`<div class="project-result">
+          <h3>${project.title}</h3>
+          <p>${project.description}</p>
+        </div>`);
+      });
+    } else {
+      addToTerminal(`<span class="error">No projects found matching "${query}"</span>`);
+    }
+  }
+
   // Function to show help
   function showHelp() {
     showContent('help-content');
@@ -239,6 +296,10 @@ document.addEventListener('DOMContentLoaded', () => {
     addToTerminal('<span class="command">hack</span> - Start a hacking simulation');
     addToTerminal('<span class="command">download resume</span> - Download my resume');
     addToTerminal('<span class="command">certs</span> - View my certifications and credentials');
+    addToTerminal('<span class="command">interests</span> - Show my personal interests and hobbies');
+    addToTerminal('<span class="command">projects search</span> - Search for specific projects (e.g., projects search python)');
+    addToTerminal('<span class="command">speed</span> - Change typing speed (slow, medium, fast, instant)');
+    addToTerminal('<span class="command">weather</span> - Show weather for a city (e.g., weather New York)');
     
     // Add keyboard shortcuts
     addToTerminal('<br><strong>Keyboard Shortcuts:</strong>');
@@ -537,7 +598,8 @@ document.addEventListener('DOMContentLoaded', () => {
         'contact', 'game', 'resume', 'social', 'echo', 
         'date', 'whoami', 'sudo', 'matrix', 'coffee', 
         'secret', 'unlock', 'theme', 'level', 'quote', 'hack',
-        'adventure', 'download', 'certs', 'certifications'
+        'adventure', 'download', 'certs', 'certifications',
+        'interests', 'hobbies', 'weather'
       ];
       
       const matches = commands.filter(cmd => cmd.startsWith(command));
@@ -560,7 +622,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // NEW FUNCTIONS
   
   // Typewriter effect
-  function typeWriter(element, text, speed = 25) {
+  function typeWriter(element, text, speed = null) {
+    // Use provided speed or global typingSpeed
+    const typeDelay = speed || typingSpeed;
+    
     // Create a static counter for instances
     typeWriter.counter = (typeWriter.counter || 0) + 1;
     const myInstance = typeWriter.counter;
@@ -573,6 +638,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Reset content
     element.innerHTML = '';
     let i = 0;
+    
+    // For instant typing
+    if (typeDelay <= 1) {
+      element.innerHTML = text;
+      return;
+    }
     
     const timer = setInterval(() => {
       // If a newer typewriter has started, cancel this one
@@ -588,7 +659,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clearInterval(timer);
         element._typewriterTimer = null;
       }
-    }, speed);
+    }, typeDelay);
     
     // Store the timer so it can be cancelled if needed
     element._typewriterTimer = timer;
@@ -970,6 +1041,120 @@ EXPERIENCE
     
     // Add a tip about viewing full resume
     addToTerminal(`<div style="margin-top: 20px; font-style: italic; color: var(--terminal-gray);">Type <span class="command">resume</span> to see my full resume or <span class="command">download resume</span> to download a copy.</div>`);
+  }
+
+  // Function to show personal interests and hobbies
+  function showInterests() {
+    addToTerminal(`<h2>Personal Interests & Hobbies</h2>`);
+    
+    const interests = [
+      {
+        category: "Technology",
+        items: ["Cloud Computing", "Cybersecurity", "Networking", "Open Source Projects", "Linux"]
+      },
+      {
+        category: "Learning",
+        items: ["Technical Certifications", "Online Courses", "Technology Books", "Industry Podcasts"]
+      },
+      {
+        category: "Creative",
+        items: ["Web Design", "UI/UX Exploration", "Technical Writing", "Digital Art"]
+      },
+      {
+        category: "Others",
+        items: ["Fitness", "Travel", "Photography", "Gaming"]
+      }
+    ];
+    
+    interests.forEach(category => {
+      // Display each category and its interests
+      addToTerminal(`
+        <div style="margin: 15px 0;">
+          <h3 style="color: var(--terminal-blue); margin-bottom: 10px;">${category.category}</h3>
+          <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-left: 15px;">
+            ${category.items.map(item => 
+              `<span style="background: rgba(0, 255, 0, 0.1); padding: 5px 10px; border-radius: 4px; color: var(--terminal-green);">${item}</span>`
+            ).join('')}
+          </div>
+        </div>
+      `);
+    });
+    
+    // Add a personal note
+    addToTerminal(`
+      <div style="margin-top: 20px; font-style: italic; border-left: 3px solid var(--terminal-blue); padding-left: 15px;">
+        "I'm passionate about exploring new technologies and continuously enhancing my skills. When I'm not coding or learning, you'll find me enjoying these interests."
+      </div>
+    `);
+  }
+
+  // Function to set typing speed
+  function setTypingSpeed(speed) {
+    typingSpeed = speed === 'slow' ? 50 : speed === 'medium' ? 25 : speed === 'fast' ? 15 : 10;
+    addToTerminal(`<span class="success">Typing speed set to ${speed}</span>`);
+  }
+
+  // Function to show weather for a city
+  function showWeather(city) {
+    addToTerminal(`<span>Fetching weather data for "${city}"...</span>`);
+    
+    // Using OpenWeatherMap API (free tier)
+    const apiKey = ''; // You'll need to get your own API key
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&units=imperial&appid=${apiKey}`;
+    
+    if (!apiKey) {
+      // Fallback to a demo response if no API key is provided
+      setTimeout(() => {
+        const mockWeather = {
+          name: city,
+          main: {
+            temp: Math.floor(Math.random() * 30) + 60,
+            feels_like: Math.floor(Math.random() * 30) + 60,
+            humidity: Math.floor(Math.random() * 50) + 30
+          },
+          weather: [{ description: ['sunny', 'partly cloudy', 'overcast', 'light rain', 'clear'][Math.floor(Math.random() * 5)] }],
+          wind: { speed: Math.floor(Math.random() * 15) + 5 }
+        };
+        displayWeatherData(mockWeather);
+      }, 1000);
+      return;
+    }
+    
+    // Fetch weather data
+    fetch(url)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('City not found or API error');
+        }
+        return response.json();
+      })
+      .then(data => {
+        displayWeatherData(data);
+      })
+      .catch(error => {
+        addToTerminal(`<span class="error">Error: ${error.message}</span>`);
+      });
+  }
+  
+  // Helper function to display weather data
+  function displayWeatherData(data) {
+    const weatherHTML = `
+      <div style="margin: 15px 0; padding: 15px; border-radius: 8px; background: rgba(0, 100, 255, 0.1); color: var(--terminal-text);">
+        <h3 style="margin-top: 0; color: var(--terminal-blue);">Weather for ${data.name}</h3>
+        <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+          <div>
+            <div style="font-size: 2em; margin-bottom: 10px;">${Math.round(data.main.temp)}°F</div>
+            <div>Feels like: ${Math.round(data.main.feels_like)}°F</div>
+            <div style="text-transform: capitalize;">${data.weather[0].description}</div>
+          </div>
+          <div>
+            <div>Humidity: ${data.main.humidity}%</div>
+            <div>Wind: ${Math.round(data.wind.speed)} mph</div>
+          </div>
+        </div>
+      </div>
+    `;
+    addToTerminal(weatherHTML);
   }
 });
   
