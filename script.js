@@ -242,10 +242,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Function to clear terminal
   function clearTerminal() {
+    // Clear all content
     while (terminal.firstChild) {
       terminal.removeChild(terminal.firstChild);
     }
-    // Re-add welcome message
+    
+    // Add welcome message
     addToTerminal(`<div class="welcome-message">
       <pre class="ascii-art">
  _____       _                          ______                                _       
@@ -257,12 +259,15 @@ document.addEventListener('DOMContentLoaded', () => {
         __/ |                                                  | |                   
        |___/                                                   |_|                   
       </pre>
-      <p>Welcome to my interactive terminal portfolio! Type <span class="command">help</span> to see available commands.</p>
+      <p></p>
     </div>`);
     
-    // Apply typewriter effect to the welcome message
+    // Apply typewriter effect to the welcome message (only once)
     const welcomeP = document.querySelector('.welcome-message p');
-    typeWriter(welcomeP, 'Welcome to my interactive terminal portfolio! Type help to see available commands.');
+    if (welcomeP) {
+      welcomeP.innerHTML = ''; // Ensure it's empty before typing
+      typeWriter(welcomeP, 'Welcome to my interactive terminal portfolio! Type help to see available commands.', 15);
+    }
   }
 
   // Matrix effect
@@ -539,7 +544,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // NEW FUNCTIONS
   
   // Typewriter effect
-  function typeWriter(element, text, speed = 30) {
+  function typeWriter(element, text, speed = 25) {
+    // Cancel any existing typewriter effect
+    if (element._typewriterTimer) {
+      clearInterval(element._typewriterTimer);
+    }
+    
     let i = 0;
     element.innerHTML = '';
     
@@ -549,8 +559,12 @@ document.addEventListener('DOMContentLoaded', () => {
         i++;
       } else {
         clearInterval(timer);
+        element._typewriterTimer = null;
       }
     }, speed);
+    
+    // Store the timer so it can be cancelled if needed
+    element._typewriterTimer = timer;
   }
   
   // Command history persistence
@@ -651,7 +665,10 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Loading animation
   function simulateLoading() {
-    clearTerminal(); // Clear any existing content
+    // Clear any existing content immediately
+    while (terminal.firstChild) {
+      terminal.removeChild(terminal.firstChild);
+    }
     
     const bootSequence = [
       "Initializing system...",
@@ -668,7 +685,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // After all boot messages, show the welcome screen
         if (index === bootSequence.length - 1) {
           setTimeout(() => {
-            clearTerminal();
+            // Clear the terminal again before showing welcome message
+            while (terminal.firstChild) {
+              terminal.removeChild(terminal.firstChild);
+            }
+            
+            // Add welcome message with ASCII art
             addToTerminal(`<div class="welcome-message">
               <pre class="ascii-art">
  _____       _                          ______                                _       
@@ -683,9 +705,12 @@ document.addEventListener('DOMContentLoaded', () => {
               <p></p>
             </div>`);
             
-            // Apply typewriter effect to welcome message
+            // Apply typewriter effect to welcome message once
             const welcomeP = document.querySelector('.welcome-message p');
-            typeWriter(welcomeP, 'Welcome to my interactive terminal portfolio! Type help to see available commands.');
+            if (welcomeP) {
+              welcomeP.innerHTML = ''; // Ensure it's empty before typing
+              typeWriter(welcomeP, 'Welcome to my interactive terminal portfolio! Type help to see available commands.');
+            }
           }, 1000);
         }
       }, index * 800);
