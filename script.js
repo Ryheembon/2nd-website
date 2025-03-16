@@ -11,6 +11,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // Username changes when unlocked
   let username = 'visitor';
   let isAdmin = false;
+  
+  // Simulate terminal loading
+  simulateLoading();
+  
+  // Load saved command history
+  loadCommandHistory();
+  
+  // Add accessibility improvements
+  addAccessibilityFeatures();
 
   // Function to update the prompt
   function updatePrompt() {
@@ -37,6 +46,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (cmd && commandHistory[commandHistory.length - 1] !== cmd) {
       commandHistory.push(cmd);
       historyIndex = commandHistory.length;
+      // Save command history
+      saveCommandHistory();
     }
 
     // Add command to terminal with prompt
@@ -113,6 +124,36 @@ document.addEventListener('DOMContentLoaded', () => {
           addToTerminal('<span class="error">Invalid password.</span>');
         }
         break;
+      case 'theme':
+        if (args[0] === 'dark') {
+          document.documentElement.style.setProperty('--terminal-bg', '#1e1e1e');
+          addToTerminal('<span class="success">Theme set to dark</span>');
+        } else if (args[0] === 'light') {
+          document.documentElement.style.setProperty('--terminal-bg', '#f0f0f0');
+          document.documentElement.style.setProperty('--terminal-text', '#333333');
+          addToTerminal('<span class="success">Theme set to light</span>');
+        } else if (args[0] === 'hacker') {
+          document.documentElement.style.setProperty('--terminal-bg', '#000000');
+          document.documentElement.style.setProperty('--terminal-text', '#00ff00');
+          document.documentElement.style.setProperty('--terminal-prompt', '#00ff00');
+          addToTerminal('<span class="success">Theme set to hacker</span>');
+        } else {
+          addToTerminal('<span class="error">Available themes: dark, light, hacker</span>');
+        }
+        break;
+      case 'level':
+        if (args.length > 0) {
+          showSkillLevel(args.join(' '));
+        } else {
+          addToTerminal('<span class="error">Usage: level [skill name]</span>');
+        }
+        break;
+      case 'quote':
+        showRandomQuote();
+        break;
+      case 'hack':
+        startHackingSimulation();
+        break;
       case '':
         // Do nothing for empty command
         break;
@@ -176,8 +217,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // Function to show help
   function showHelp() {
     showContent('help-content');
-    // Add adventure command to the list if not shown in help-content
+    // Add additional commands that might not be in help-content
     addToTerminal('<br><span class="command">adventure</span> - Play an interactive text adventure game');
+    addToTerminal('<span class="command">theme</span> - Change terminal theme (dark, light, hacker)');
+    addToTerminal('<span class="command">level</span> - View skill level (e.g., level javascript)');
+    addToTerminal('<span class="command">quote</span> - Display a random inspirational quote');
+    addToTerminal('<span class="command">hack</span> - Start a hacking simulation');
   }
 
   // Function to clear terminal
@@ -199,6 +244,10 @@ document.addEventListener('DOMContentLoaded', () => {
       </pre>
       <p>Welcome to my interactive terminal portfolio! Type <span class="command">help</span> to see available commands.</p>
     </div>`);
+    
+    // Apply typewriter effect to the welcome message
+    const welcomeP = document.querySelector('.welcome-message p');
+    typeWriter(welcomeP, 'Welcome to my interactive terminal portfolio! Type help to see available commands.');
   }
 
   // Matrix effect
@@ -451,7 +500,8 @@ document.addEventListener('DOMContentLoaded', () => {
         'help', 'clear', 'about', 'skills', 'projects', 
         'contact', 'game', 'resume', 'social', 'echo', 
         'date', 'whoami', 'sudo', 'matrix', 'coffee', 
-        'secret', 'unlock'
+        'secret', 'unlock', 'theme', 'level', 'quote', 'hack',
+        'adventure'
       ];
       
       const matches = commands.filter(cmd => cmd.startsWith(command));
@@ -470,5 +520,161 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Initialize with welcome message (it's already in the HTML)
+
+  // NEW FUNCTIONS
+  
+  // Typewriter effect
+  function typeWriter(element, text, speed = 30) {
+    let i = 0;
+    element.innerHTML = '';
+    
+    const timer = setInterval(() => {
+      if (i < text.length) {
+        element.innerHTML += text.charAt(i);
+        i++;
+      } else {
+        clearInterval(timer);
+      }
+    }, speed);
+  }
+  
+  // Command history persistence
+  function saveCommandHistory() {
+    localStorage.setItem('terminal_history', JSON.stringify(commandHistory.slice(-20)));
+  }
+
+  function loadCommandHistory() {
+    const savedHistory = localStorage.getItem('terminal_history');
+    if (savedHistory) {
+      commandHistory.push(...JSON.parse(savedHistory));
+      historyIndex = commandHistory.length;
+    }
+  }
+  
+  // Add accessibility features
+  function addAccessibilityFeatures() {
+    document.querySelector('.terminal-container').setAttribute('role', 'application');
+    document.querySelector('.terminal-container').setAttribute('aria-label', 'Terminal Portfolio');
+    document.querySelector('.terminal-output').setAttribute('role', 'log');
+    document.querySelector('.terminal-output').setAttribute('aria-live', 'polite');
+    
+    // Add skip to command input link for keyboard users
+    const skipLink = document.createElement('a');
+    skipLink.href = '#terminal-input';
+    skipLink.className = 'skip-link';
+    skipLink.textContent = 'Skip to command input';
+    document.body.insertBefore(skipLink, document.body.firstChild);
+  }
+  
+  // Skill level visualization
+  function showSkillLevel(skill) {
+    const skills = {
+      'javascript': 85,
+      'html': 95,
+      'css': 90,
+      'python': 80,
+      'networking': 75,
+      'linux': 70,
+      // Add your skills and proficiency levels
+    };
+    
+    const level = skills[skill.toLowerCase()];
+    if (level) {
+      const bars = Math.floor(level / 10);
+      let progressBar = '[';
+      for (let i = 0; i < 10; i++) {
+        progressBar += i < bars ? '█' : '░';
+      }
+      progressBar += `] ${level}%`;
+      addToTerminal(`<span>${skill}: ${progressBar}</span>`);
+    } else {
+      addToTerminal(`<span class="error">Skill '${skill}' not found. Try: javascript, html, css, python, networking, linux</span>`);
+    }
+  }
+  
+  // Random quote function
+  function showRandomQuote() {
+    const quotes = [
+      "The best way to predict the future is to invent it. - Alan Kay",
+      "Every great developer you know got there by solving problems they were unqualified to solve until they actually did it. - Patrick McKenzie",
+      "Code is like humor. When you have to explain it, it's bad. - Cory House",
+      "First, solve the problem. Then, write the code. - John Johnson",
+      "It's not at all important to get it right the first time. It's vitally important to get it right the last time. - Andrew Hunt",
+      "Programming isn't about what you know; it's about what you can figure out. - Chris Pine"
+    ];
+    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+    addToTerminal(`<span style="color: #f4d03f;">"${randomQuote}"</span>`);
+  }
+  
+  // Hacking simulation
+  function startHackingSimulation() {
+    addToTerminal('<span style="color: #ff5f56;">Initiating hack sequence...</span>');
+    
+    const steps = [
+      "Scanning network...",
+      "Bypassing firewall...",
+      "Obtaining access...",
+      "Decrypting files...",
+      "Extracting data...",
+      "Covering tracks..."
+    ];
+    
+    steps.forEach((step, index) => {
+      setTimeout(() => {
+        const percent = Math.floor(Math.random() * 31) + 70; // 70-100%
+        addToTerminal(`<span style="color: #ff5f56;">${step} ${percent}% complete</span>`);
+        
+        if (index === steps.length - 1) {
+          setTimeout(() => {
+            addToTerminal('<span style="color: #ff5f56; font-weight: bold;">HACK COMPLETE: You found another easter egg!</span>');
+            addToTerminal('<span style="color: #ff5f56;">Try typing <span class="command">quote</span> for inspirational developer quotes.</span>');
+          }, 1000);
+        }
+      }, index * 1500);
+    });
+  }
+  
+  // Loading animation
+  function simulateLoading() {
+    clearTerminal(); // Clear any existing content
+    
+    const bootSequence = [
+      "Initializing system...",
+      "Loading kernel modules...",
+      "Mounting filesystem...",
+      "Starting network services...",
+      "Launching portfolio interface..."
+    ];
+    
+    bootSequence.forEach((line, index) => {
+      setTimeout(() => {
+        addToTerminal(`<span style="color: #88c0d0;">${line}</span>`);
+        
+        // After all boot messages, show the welcome screen
+        if (index === bootSequence.length - 1) {
+          setTimeout(() => {
+            clearTerminal();
+            addToTerminal(`<div class="welcome-message">
+              <pre class="ascii-art">
+ _____       _                          ______                                _       
+|  __ \\     | |                         | ___ \\                              | |      
+| |  \\/_   _| |__   ___  ___ _ __ ___   | |_/ /___  _ __   __ _ _ __   __ _ | |_ ___ 
+| | __| | | | '_ \\ / _ \\/ _ \\ '_ \` _ \\  |    // _ \\| '_ \\ / _\` | '_ \\ / _\` || __/ _ \\
+| |_\\ \\ |_| | | | |  __/  __/ | | | | | | |\\ \\ (_) | | | | (_| | |_) | (_| || ||  __/
+ \\____/\\__, |_| |_|\\___|\___|_| |_| |_| \\_| \\_\\___/|_| |_|\\__,_| .__/ \\__,_| \\_\\___|
+        __/ |                                                  | |                   
+       |___/                                                   |_|                   
+              </pre>
+              <p></p>
+            </div>`);
+            
+            // Apply typewriter effect to welcome message
+            const welcomeP = document.querySelector('.welcome-message p');
+            typeWriter(welcomeP, 'Welcome to my interactive terminal portfolio! Type help to see available commands.');
+          }, 1000);
+        }
+      }, index * 800);
+    });
+  }
 });
   

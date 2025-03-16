@@ -424,6 +424,18 @@ footer {
   .tech-stack {
     justify-content: center;
   }
+
+  #terminal-input {
+    font-size: 14px;
+  }
+  
+  .command {
+    padding: 0 2px;
+  }
+  
+  .terminal-window {
+    padding: 10px;
+  }
 }
 
 /* Terminal Portfolio Styles */
@@ -800,4 +812,19 @@ div:contains("adventure") {
 .body {
   font-family: var(--terminal-font);
   background-color: var(--terminal-bg);
+}
+
+/* Add the skip link styles that were commented out before */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #fff;
+  padding: 8px;
+  z-index: 100;
+  transition: top 0.3s;
+}
+
+.skip-link:focus {
+  top: 0;
 }
