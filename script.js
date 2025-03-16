@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
   let username = 'visitor';
   let isAdmin = false;
   
+  // Flag to track if welcome message has been shown
+  let welcomeMessageShown = false;
+  
   // Simulate terminal loading
   simulateLoading();
   
@@ -247,6 +250,9 @@ document.addEventListener('DOMContentLoaded', () => {
       terminal.removeChild(terminal.firstChild);
     }
     
+    // Set flag - welcome message will be shown after clearing
+    welcomeMessageShown = true;
+    
     // Add welcome message
     addToTerminal(`<div class="welcome-message">
       <pre class="ascii-art">
@@ -262,11 +268,16 @@ document.addEventListener('DOMContentLoaded', () => {
       <p></p>
     </div>`);
     
-    // Apply typewriter effect to the welcome message (only once)
+    // Apply typewriter effect only once and with a guaranteed clean target
     const welcomeP = document.querySelector('.welcome-message p');
     if (welcomeP) {
-      welcomeP.innerHTML = ''; // Ensure it's empty before typing
-      typeWriter(welcomeP, 'Welcome to my interactive terminal portfolio! Type help to see available commands.', 15);
+      // Make sure we reset the innerHTML before starting to type
+      welcomeP.innerHTML = '';
+      
+      // Use a short delay to ensure any previous typewriter effects have been cancelled
+      setTimeout(() => {
+        typeWriter(welcomeP, 'Welcome to my interactive terminal portfolio! Type help to see available commands.', 15);
+      }, 50);
     }
   }
 
@@ -545,15 +556,26 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Typewriter effect
   function typeWriter(element, text, speed = 25) {
+    // Create a static counter for instances
+    typeWriter.counter = (typeWriter.counter || 0) + 1;
+    const myInstance = typeWriter.counter;
+    
     // Cancel any existing typewriter effect
     if (element._typewriterTimer) {
       clearInterval(element._typewriterTimer);
     }
     
-    let i = 0;
+    // Reset content
     element.innerHTML = '';
+    let i = 0;
     
     const timer = setInterval(() => {
+      // If a newer typewriter has started, cancel this one
+      if (myInstance !== typeWriter.counter) {
+        clearInterval(timer);
+        return;
+      }
+      
       if (i < text.length) {
         element.innerHTML += text.charAt(i);
         i++;
@@ -665,6 +687,11 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Loading animation
   function simulateLoading() {
+    // If welcome message has already been shown, don't show it again
+    if (welcomeMessageShown) {
+      return;
+    }
+    
     // Clear any existing content immediately
     while (terminal.firstChild) {
       terminal.removeChild(terminal.firstChild);
@@ -711,6 +738,9 @@ document.addEventListener('DOMContentLoaded', () => {
               welcomeP.innerHTML = ''; // Ensure it's empty before typing
               typeWriter(welcomeP, 'Welcome to my interactive terminal portfolio! Type help to see available commands.');
             }
+            
+            // Set flag indicating welcome message has been shown
+            welcomeMessageShown = true;
           }, 1000);
         }
       }, index * 800);
