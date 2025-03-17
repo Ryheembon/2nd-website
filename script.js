@@ -207,6 +207,33 @@ document.addEventListener('DOMContentLoaded', () => {
           addToTerminal('<span class="error">Usage: download resume</span>');
         }
         break;
+      case 'ascii':
+        if (args.length > 0) {
+          generateAsciiArt(args.join(' '));
+        } else {
+          addToTerminal('<span class="error">Usage: ascii [text] - Generates custom ASCII art from your text</span>');
+        }
+        break;
+      case 'screensaver':
+        startScreensaver();
+        break;
+      case 'qr':
+        if (args.length > 0) {
+          generateQR(args.join(' '));
+        } else {
+          generateQR('https://yourportfolio.com'); // Default URL
+        }
+        break;
+      case 'typingtest':
+        startTypingTest();
+        break;
+      case 'themes':
+        addToTerminal('<span class="info">Showcasing available themes...</span>');
+        cycleThemes();
+        break;
+      case 'memory':
+        startMemoryGame();
+        break;
       case '':
         // Do nothing for empty command
         break;
@@ -616,7 +643,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'date', 'whoami', 'sudo', 'matrix', 'coffee', 
         'secret', 'unlock', 'theme', 'level', 'quote', 'hack',
         'adventure', 'download', 'certs', 'certifications',
-        'interests', 'hobbies', 'weather', 'code', 'vis', 'visualize', 'timeline'
+        'interests', 'hobbies', 'weather', 'code', 'vis', 'visualize', 'timeline', 'screensaver', 'qr', 'typingtest', 'themes', 'memory'
       ];
       
       const matches = commands.filter(cmd => cmd.startsWith(command));
@@ -1748,6 +1775,293 @@ try {
     addToTerminal(`<div style="margin-top: 20px; font-style: italic; color: var(--terminal-gray);">
       Type <span class="command">resume</span> to see my full resume or <span class="command">download resume</span> to download a copy.
     </div>`);
+  }
+
+  // Function to generate ASCII art from text
+  function generateAsciiArt(text) {
+    // Simple implementation - convert text to a stylized banner
+    const characters = text.toUpperCase().split('');
+    let result = '\n';
+    
+    // Create top border
+    result += '┌' + '─'.repeat(text.length * 4 + 2) + '┐\n';
+    
+    // Create middle section with characters
+    result += '│ ';
+    characters.forEach(char => {
+      // Add some random styling to each character
+      const styles = ['bold', 'colored', 'shadowed', 'normal'];
+      const style = styles[Math.floor(Math.random() * styles.length)];
+      
+      if (style === 'bold') {
+        result += `<span style="font-weight: bold; font-size: 1.2em;">${char}</span>   `;
+      } else if (style === 'colored') {
+        const colors = ['#ff5f56', '#ffbd2e', '#27c93f', '#58a6ff'];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        result += `<span style="color: ${color};">${char}</span>   `;
+      } else if (style === 'shadowed') {
+        result += `<span style="text-shadow: 2px 2px 2px rgba(0,0,0,0.5);">${char}</span>   `;
+      } else {
+        result += `${char}   `;
+      }
+    });
+    result += '│\n';
+    
+    // Create bottom border
+    result += '└' + '─'.repeat(text.length * 4 + 2) + '┘\n';
+    
+    addToTerminal(`<pre class="ascii-art">${result}</pre>`);
+    
+    // Add a message about sharing
+    addToTerminal('<span class="success">Your unique ASCII art is ready! Take a screenshot to share.</span>');
+  }
+
+  function startScreensaver() {
+    const chars = ['0', '1', '$', '#', '@', '■', '□', '▲', '▼', '★', '☆', '♦', '♥'];
+    const colors = ['#ff5f56', '#ffbd2e', '#27c93f', '#58a6ff'];
+    const overlay = document.createElement('div');
+    
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+    overlay.style.backgroundColor = 'rgba(0,0,0,0.9)';
+    overlay.style.zIndex = '999';
+    overlay.style.overflow = 'hidden';
+    
+    document.body.appendChild(overlay);
+    
+    for (let i = 0; i < 100; i++) {
+      const floatingChar = document.createElement('div');
+      floatingChar.textContent = chars[Math.floor(Math.random() * chars.length)];
+      floatingChar.style.position = 'absolute';
+      floatingChar.style.left = `${Math.random() * 100}%`;
+      floatingChar.style.top = `${Math.random() * 100}%`;
+      floatingChar.style.color = colors[Math.floor(Math.random() * colors.length)];
+      floatingChar.style.fontSize = `${Math.random() * 24 + 12}px`;
+      floatingChar.style.opacity = `${Math.random() * 0.7 + 0.3}`;
+      floatingChar.style.animation = `float ${Math.random() * 10 + 5}s linear infinite`;
+      overlay.appendChild(floatingChar);
+    }
+    
+    // Add CSS keyframes for animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes float {
+        0% { transform: translateY(0) rotate(0deg); }
+        100% { transform: translateY(-100vh) rotate(360deg); }
+      }
+    `;
+    document.head.appendChild(style);
+    
+    // Click to exit
+    overlay.addEventListener('click', () => {
+      document.body.removeChild(overlay);
+    });
+    
+    // Exit after 30 seconds
+    setTimeout(() => {
+      if (document.body.contains(overlay)) {
+        document.body.removeChild(overlay);
+      }
+    }, 30000);
+  }
+
+  function generateQR(text) {
+    // Simple QR code using unicode blocks
+    const size = 21; // Standard QR code size
+    const qr = [];
+    
+    // Generate a very simple pattern (this is just for visual effect, not a real QR code)
+    // Static frame - real QR codes have finder patterns in corners
+    for (let i = 0; i < size; i++) {
+      let row = [];
+      for (let j = 0; j < size; j++) {
+        if (i === 0 || i === size-1 || j === 0 || j === size-1) {
+          row.push('█');
+        } else if (((i+j) % 3 === 0) || (text.length > 0 && (i*j) % text.length === 0)) {
+          row.push('█');
+        } else {
+          row.push(' ');
+        }
+      }
+      qr.push(row.join(''));
+    }
+    
+    // Add terminal styling
+    addToTerminal('<span class="success">Scan this QR code to connect:</span>');
+    addToTerminal(`<pre class="ascii-art" style="color: var(--terminal-green); line-height: 1;">${qr.join('\n')}</pre>`);
+    addToTerminal(`<span class="terminal-text">Contains: ${text}</span>`);
+    addToTerminal('<span class="terminal-text">(Note: This is a simulated QR code for display purposes)</span>');
+  }
+
+  function startTypingTest() {
+    const phrases = [
+      "The quick brown fox jumps over the lazy dog",
+      "Programming is thinking, not typing",
+      "Talk is cheap. Show me the code.",
+      "First, solve the problem. Then, write the code.",
+      "Code is like humor. When you have to explain it, it's bad."
+    ];
+    
+    const phrase = phrases[Math.floor(Math.random() * phrases.length)];
+    
+    addToTerminal(`<div class="typing-test">
+      <h3>Terminal Typing Test</h3>
+      <p>Type the following phrase as quickly and accurately as possible:</p>
+      <div class="typing-phrase">${phrase}</div>
+      <div class="typing-input-wrapper">
+        <input type="text" id="typing-input" class="typing-input" autocomplete="off">
+      </div>
+      <button id="typing-start">Start Test</button>
+      <div class="typing-results"></div>
+    </div>`);
+    
+    // Set up event handlers
+    const typingInput = document.getElementById('typing-input');
+    const startButton = document.getElementById('typing-start');
+    const resultsDiv = document.querySelector('.typing-results');
+    
+    let startTime;
+    let endTime;
+    
+    startButton.addEventListener('click', () => {
+      typingInput.value = '';
+      typingInput.disabled = false;
+      typingInput.focus();
+      startTime = new Date();
+      startButton.textContent = 'Typing...';
+      resultsDiv.textContent = '';
+    });
+    
+    typingInput.addEventListener('input', () => {
+      if (typingInput.value === phrase) {
+        endTime = new Date();
+        const timeElapsed = (endTime - startTime) / 1000;
+        const wpm = Math.round((phrase.length / 5) / (timeElapsed / 60));
+        
+        typingInput.disabled = true;
+        startButton.textContent = 'Try Again';
+        resultsDiv.innerHTML = `
+          <div class="typing-success">Great job!</div>
+          <div>Time: ${timeElapsed.toFixed(2)} seconds</div>
+          <div>Speed: ${wpm} WPM</div>
+          <div>Accuracy: 100%</div>
+        `;
+      }
+    });
+  }
+
+  function cycleThemes() {
+    const themes = [
+      {name: 'Synthwave', bg: '#2b213a', text: '#ff71ce', prompt: '#05ffa1'},
+      {name: 'Cyberpunk', bg: '#0d0221', text: '#00fff9', prompt: '#ff00a0'},
+      {name: 'Sunset', bg: '#34374c', text: '#f2c14e', prompt: '#ff5e5b'},
+      {name: 'Forest', bg: '#2c3e50', text: '#27ae60', prompt: '#f1c40f'},
+      {name: 'Ocean', bg: '#1e3d59', text: '#f5f0e1', prompt: '#ff6e40'},
+      {name: 'Vampire', bg: '#1a1a2e', text: '#e94560', prompt: '#c9c9c9'}
+    ];
+    
+    let currentIndex = 0;
+    const themeInterval = setInterval(() => {
+      const theme = themes[currentIndex];
+      document.documentElement.style.setProperty('--terminal-bg', theme.bg);
+      document.documentElement.style.setProperty('--terminal-text', theme.text);
+      document.documentElement.style.setProperty('--terminal-prompt', theme.prompt);
+      
+      addToTerminal(`<span style="color: ${theme.prompt};">Theme changed to: ${theme.name}</span>`);
+      
+      currentIndex = (currentIndex + 1) % themes.length;
+      
+      // Stop after cycling through all themes
+      if (currentIndex === 0) {
+        clearInterval(themeInterval);
+        addToTerminal('<span class="success">Theme showcase complete. Use the "theme" command to select your favorite!</span>');
+      }
+    }, 2000);
+  }
+
+  function startMemoryGame() {
+    const symbols = ['♠', '♥', '♦', '♣', '★', '☆', '♪', '♫'];
+    const gameSymbols = [...symbols, ...symbols].sort(() => Math.random() - 0.5);
+    
+    let html = '<div class="memory-game"><h3>Terminal Memory Game</h3><p>Match the pairs:</p><div class="memory-grid">';
+    
+    for (let i = 0; i < gameSymbols.length; i++) {
+      html += `<div class="memory-card" data-index="${i}" data-symbol="${gameSymbols[i]}">?</div>`;
+    }
+    
+    html += '</div><div class="memory-stats">Moves: <span id="memory-moves">0</span></div></div>';
+    
+    addToTerminal(html);
+    
+    // Add some basic CSS
+    const style = document.createElement('style');
+    style.textContent = `
+      .memory-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 15px 0; }
+      .memory-card { background: var(--terminal-bg); border: 2px solid var(--terminal-prompt); 
+                    height: 40px; line-height: 40px; text-align: center; cursor: pointer; 
+                    font-size: 20px; border-radius: 5px; }
+      .memory-card.flipped { background: rgba(255,255,255,0.1); }
+      .memory-card.matched { background: rgba(0,255,0,0.2); border-color: var(--terminal-green); }
+    `;
+    document.head.appendChild(style);
+    
+    // Game logic
+    const cards = document.querySelectorAll('.memory-card');
+    let flipped = [];
+    let matched = [];
+    let moves = 0;
+    const movesDisplay = document.getElementById('memory-moves');
+    
+    cards.forEach(card => {
+      card.addEventListener('click', () => {
+        const index = card.dataset.index;
+        
+        // Skip if already flipped or matched
+        if (flipped.includes(index) || matched.includes(index)) return;
+        
+        // Flip card
+        card.textContent = card.dataset.symbol;
+        card.classList.add('flipped');
+        flipped.push(index);
+        
+        // Check for match
+        if (flipped.length === 2) {
+          moves++;
+          movesDisplay.textContent = moves;
+          
+          const [first, second] = flipped;
+          const firstCard = document.querySelector(`.memory-card[data-index="${first}"]`);
+          const secondCard = document.querySelector(`.memory-card[data-index="${second}"]`);
+          
+          if (firstCard.dataset.symbol === secondCard.dataset.symbol) {
+            // Match found
+            firstCard.classList.add('matched');
+            secondCard.classList.add('matched');
+            matched.push(first, second);
+            flipped = [];
+            
+            // Check for win
+            if (matched.length === gameSymbols.length) {
+              setTimeout(() => {
+                addToTerminal(`<span class="success">Congratulations! You completed the game in ${moves} moves!</span>`);
+              }, 500);
+            }
+          } else {
+            // No match
+            setTimeout(() => {
+              firstCard.textContent = '?';
+              secondCard.textContent = '?';
+              firstCard.classList.remove('flipped');
+              secondCard.classList.remove('flipped');
+              flipped = [];
+            }, 1000);
+          }
+        }
+      });
+    });
   }
 });
   
